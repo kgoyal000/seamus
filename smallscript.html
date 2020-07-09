@@ -90,13 +90,12 @@ var activeVideo = 0;
     
 console.log('active video is ...' + activeVideo);    
 
-    /*settimeout is used as the autoplay feature doesn't work until the user interacts with the DOM so a workaround is to click on screen within the first 4 seconds and then player1 will play
+    //settimeout is used as the autoplay feature doesn't work until the user interacts with the DOM so a workaround is to click on screen within the first 4 seconds and then player1 will play
 setTimeout(function () {
   console.log('play first video');
   activeVideo = (++activeVideo);  
   console.log('active video in settimeout is ...' + activeVideo);
-    player1.play();
-}, 4000);    */
+}, 400);    
  
 console.log('started loading...');        
 var pickedfinalvids = [];    
