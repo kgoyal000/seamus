@@ -1,0 +1,394 @@
+<!DOCTYPE html> 
+<html> 
+
+<head>    
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;   
+         overflow: hidden;
+         background-color: #000000;
+    }
+video { background-color: black}
+video {
+    min-width: 100%;
+    width: auto;
+    height: 100vh;
+    z-index: -100;
+}   
+@media only screen and (min-width: 992px) {
+    video {
+        width: auto;
+        height: 100vh;
+    }   
+}
+
+@media only screen
+and (min-device-width : 320px)
+and (max-device-width : 568px)
+and (orientation : landscape) {
+    video {
+    height: 100vh !important;
+  }
+}
+
+@media only screen and (max-width: 639px) {
+    video {
+        width: 100%;
+        height: auto;
+    }  
+  }
+  
+  @media (min-width: 767px) and (max-width: 1025px) and (orientation: portrait) {
+    video {
+      height: auto;
+    width: 100%;
+    }
+
+  }
+  
+  @media only screen and (min-device-width: 1366px) and (max-device-height: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) {
+    video {
+      height: auto;
+      width: 100%;
+    }
+  }
+  
+  @media only screen and (min-device-width: 1024px) and (max-device-height: 1366px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+    video {
+      height: auto;
+      width: 100%;
+    }
+  }
+  .container{
+      overflow: hidden;
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+  }  
+</style>
+</head>
+    
+<body> 
+<div class="container">
+    <video id="myVideo1"  preload="auto" style="background:#000000;;"></video>  
+    <video id="myVideo2"  preload="auto" style="background:#000000;display:none"></video>    
+</div>
+    
+<script> 
+
+//on inital load of the page it should autoplay the first video.     
+var player1 = document.getElementById('myVideo1');
+var player2 = document.getElementById('myVideo2');
+
+var activeVideo = 0; 
+    
+    
+console.log('active video is ...' + activeVideo);    
+
+    //settimeout is used as the autoplay feature doesn't work until the user interacts with the DOM so a workaround is to click on screen within the first 4 seconds and then player1 will play
+setTimeout(function () {
+  console.log('play first video');
+  activeVideo = (++activeVideo);  
+  console.log('active video in settimeout is ...' + activeVideo);
+    player1.play();
+}, 4000);    
+ 
+console.log('started loading...');        
+var pickedfinalvids = [];    
+    
+console.log('start inital pick run... ');
+initAllBins();    
+pickFromEachBin();
+console.log('pickedfinalvids values are: ' + pickedfinalvids.length);
+    
+for(j=0; j<pickedfinalvids.length; j++)
+{
+    console.log("index to play: " + j + " vidName: "+ pickedfinalvids[j]);
+}    
+    
+player1.src = pickedfinalvids[0];    
+//player2.src = pickedfinalvids[1]; 
+    
+player1.onended = function () { 
+    
+   console.log('activeVideo in player1 ended is.. ' + activeVideo);
+   activeVideo = (++activeVideo);
+    
+   if(activeVideo === pickedfinalvids.length){
+      activeVideo = 0;
+      pickedfinalvids = [];
+      pickFromEachBin();
+      console.log('need to repick everything again...');
+      console.log('pickedfinalvids values are: ' + pickedfinalvids.length);    
+    
+      for(j=0; j<pickedfinalvids.length; j++)
+      {
+        console.log("index to play: " + j + " vidName: "+ pickedfinalvids[j]);
+      } 
+       
+    }
+    
+    player1.style.display = 'none';
+    player2.style.display = 'block';
+    player2.play();
+};
+      
+player2.onended = function () {
+   
+    console.log('activeVideo in player2 ended is.. ' + activeVideo);
+
+    activeVideo = (++activeVideo);
+    
+    if(activeVideo === pickedfinalvids.length){
+      activeVideo = 0;
+      pickedfinalvids = [];     
+      pickFromEachBin();
+      console.log('need to repick everything again...');
+      console.log('pickedfinalvids values are: ' + pickedfinalvids.length);    
+    
+      for(j=0; j<pickedfinalvids.length; j++)
+      {
+        console.log("index to play: " + j + " vidName: "+ pickedfinalvids[j]);
+      }   
+    }
+
+    player2.style.display = 'none';
+    player1.style.display = 'block';
+    player1.play();
+      
+};
+    
+player1.onplay = function () {
+    
+    console.log('set the nextsource for player2 with activeVideo val of: ' + activeVideo + ' of player to..' + pickedfinalvids[activeVideo]); 
+    player2.src = pickedfinalvids[activeVideo]; 
+    
+};
+    
+player2.onplay = function () {
+    
+    console.log('set the nextsource for player1 with activeVideo val of: ' + activeVideo + ' of player to..' + pickedfinalvids[activeVideo]); 
+    player1.src = pickedfinalvids[activeVideo]; 
+    
+};
+
+
+function pickFromEachBin() {
+    pickTwoElement(bin1,'bin1');
+    pickOneElement(bin2, 'bin2');    
+    pickOneElement(bin3, 'bin3');
+    
+    //note there was 12 bins but I removed for this small test
+}    
+    
+function initBin1() {
+    bin1 = [
+      "finalvids/Bin1_3 A2.Svalbard_bbc_2_v1.mp4", 
+      "finalvids/8.a. A11.Svallbard(fortitude)_v1.mp4",
+      "finalvids/Bin1_1. A1.Svallbard.mp4"
+    ];
+}
+
+function initBin2() {
+    bin2 = [
+      "finalvids/Bin7_18. B9.Cave.mp4", 
+      "finalvids/Bin3_8.b. A11.Svallbard(fortitude).mp4",
+      "finalvids/Bin3_8. A11.Svallbard(fortitude).mp4"
+    ];
+}
+    
+function initBin3() {
+  bin3 = [
+      "finalvids/Bin11_24. E9.S_Role_v1.mp4", 
+      "finalvids/Bin1_2. A5.Svalbard_map.mp4",
+      "finalvids/51. C5.B_Queen_v1.mp4"
+  ];
+}   
+
+function initAllBins() {
+    initBin1();
+    initBin2();
+    initBin3();
+}    
+    
+function pickOneElement(arrayPassed, arrayName) {
+ 
+    var index = Math.floor( Math.random()*arrayPassed.length );
+    activeVideo = index;
+    
+    pickedfinalvids.push(arrayPassed[index]);
+    arrayPassed.splice( index, 1 ); 
+    
+    if(arrayPassed.length == 0)
+        {
+            if(arrayName == 'bin6')
+            {
+//               console.log('bin6 only has two value so reset it to all...');
+               initBin6();
+               shuffle(bin6); 
+            } 
+        }
+    else if(arrayPassed.length == 1)
+        {
+        if(arrayName == 'bin2')
+            {
+//               console.log('bin2 only has one value so reset it to all...');
+               initBin2();
+               shuffle(bin2); 
+            }
+        else if(arrayName == 'bin3')
+            {
+//               console.log('bin3 only has one value so reset it to all...');
+               initBin3();
+               shuffle(bin3); 
+            }
+        else if(arrayName == 'bin4')
+            {
+//               console.log('bin4 only has one value so reset it to all...');
+               initBin4();
+               shuffle(bin4); 
+            }
+        
+        else if(arrayName == 'bin7')
+            {
+//               console.log('bin7 only has two value so reset it to all...');
+               initBin7(); 
+               shuffle(bin7);
+            }
+        else if(arrayName == 'bin9')
+            {
+//               console.log('bin9 only has one value so reset it to all...');
+               initBin9(); 
+               shuffle(bin9);
+            }            
+        }
+}    
+
+function pickTwoElement(arrayPassed, arrayName) {
+    for (i = 0; i < 2; i++) {
+        var index = Math.floor( Math.random()*arrayPassed.length );
+        pickedfinalvids.push(arrayPassed[index]);
+        arrayPassed.splice( index, 1 ); 
+    }
+
+    if(arrayPassed.length == 2)
+    {
+        if(arrayName == 'bin8')
+            {
+//               console.log('bin8 only has two value so reset it to all...');
+               initBin8(); 
+               shuffle(bin8);
+            }
+         else if(arrayName == 'bin10')
+            {
+//               console.log('bin10 only has two value so reset it to all...');
+               initBin10(); 
+               shuffle(bin10); 
+            }
+    }
+    else if(arrayPassed.length == 1)
+    {
+        if(arrayName == 'bin1')
+            {
+                console.log('bin1 only has one value so reset it to all...');
+                initBin1(); 
+                shuffle(bin1);
+            } 
+    }
+    else if(arrayPassed.length == 0)
+    {
+         
+        if(arrayName == 'bin13')
+            {
+               console.log('bin13 only has two value so reset it to all...');
+               initBin13(); 
+               shuffle(bin13); 
+            }
+    }
+}
+    
+function pickThreeElement(arrayPassed, arrayName) {
+    for (i = 0; i < 3; i++) {
+        var index = Math.floor( Math.random()*arrayPassed.length );
+        pickedfinalvids.push(arrayPassed[index]);
+        arrayPassed.splice( index, 1 );
+    }
+
+    //if bin has only 2 elements reset it
+    if(arrayPassed.length == 2)
+    {
+        console.log('bin5 only has two value so reset it to all...');
+        initBin5();
+        shuffle(bin5);
+    }
+    
+//    //if bin has 2 elements reset it
+//    if(arrayPassed.length == 1)
+//    {
+//        console.log('bin5 only has two value so reset it to all...');
+//        initBin5();
+//        shuffle(bin5);
+//    }
+    
+    
+}
+    
+function pickSixElement(arrayPassed, arrayName) {
+    for (i = 0; i < 6; i++) {
+        var index = Math.floor( Math.random()*arrayPassed.length );
+        //console.log( arrayPassed[index] + " from bin: " + arrayName); // Log the item
+        pickedfinalvids.push(arrayPassed[index]);
+        arrayPassed.splice( index, 1 ); // Remove the item from the array
+    }
+
+    if(arrayPassed.length == 0)
+    {
+//        console.log('bin11 only has one value so reset it to all...');
+        initBin11();
+        shuffle(bin11);
+    }
+} 
+    
+function pickElevenElement(arrayPassed, arrayName) {
+    for (i = 0; i < 11; i++) {
+        var index = Math.floor( Math.random()*arrayPassed.length );
+        pickedfinalvids.push(arrayPassed[index]);
+        arrayPassed.splice( index, 1 ); 
+    }
+
+    if(arrayPassed.length == 0)
+    {
+//        console.log('bin12 has no value so reset it to all...');
+        initBin12();
+        shuffle(bin12);
+    }
+}    
+    
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}    
+        
+</script> 
+
+</body> 
+</html>
